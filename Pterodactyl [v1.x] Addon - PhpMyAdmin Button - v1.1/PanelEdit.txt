@@ -1,0 +1,26 @@
+Install Documentation -> https://lordbartosz.gitbook.io/phpmyadmin-button/
+
+/var/www/pterodactyl/resources/scripts/components/server/databases/DatabaseRow.tsx
+Please insert this above return (
+
+    const phpMyAdmin = () => {
+        location.replace("/pma_redirect.html");
+    };
+
+/var/www/pterodactyl/resources/scripts/components/server/databases/DatabaseRow.tsx
+Please insert this above <Button isSecondary css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>
+
+                    <Button isSecondary css={tw`mr-2`} onClick={phpMyAdmin}>
+                        <FontAwesomeIcon icon={faDatabase} fixedWidth/>
+                    </Button>
+
+/var/www/pterodactyl/public/pma_redirect.html
+Please replace "http://yourdomain.com/phpmyadmin" with your phpmyadmin url
+
+After all code inserted and public folder pasted. Please run this commands:
+- npm i -g yarn
+- cd /var/www/pterodactyl
+- yarn install
+- yarn run build:production
+
+To change the phpmyadmin url go to /var/www/pterodactyl/public/ and edit pma_redirect.html

@@ -1,0 +1,180 @@
+/routes/base.php
+Please insert this codes to /routes/base.php to the bottom of the file
+
+/*
+|--------------------------------------------------------------------------
+| Request Access To Server Controller Route
+|--------------------------------------------------------------------------
+|
+| Endpoint: /staff
+|
+*/
+Route::group(['prefix' => 'staff'], function () {
+    Route::get('/server/access', 'RequestAccessToServerController@index')->middleware('staff')->name('staff.server.access');
+
+    Route::post('/server/access/request', 'RequestAccessToServerController@request')->middleware('staff')->name('staff.server.access.request');
+	
+	Route::delete('/server/access/delete', 'RequestAccessToServerController@delete')->middleware('staff')->name('staff.server.access.delete');
+});
+
+
+
+
+/routes/admin.php
+Please insert this codes to /routes/admin.php to the bottom of the file
+
+/*
+|--------------------------------------------------------------------------
+| Staff Controller Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /staff
+|
+*/
+Route::post('/staff/update/{id}', 'StaffController@update')->name('staff.update');
+
+
+
+
+/routes/server.php
+Please insert this codes to /routes/server.php to the bottom of the file
+
+/*
+|--------------------------------------------------------------------------
+| Staff Controller
+|--------------------------------------------------------------------------
+|
+| Endpoint: /server/{server}/staff
+|
+*/
+Route::group(['prefix' => 'staff'], function () {
+    Route::get('/', 'StaffController@index')->name('server.staff');
+
+    Route::post('/accept', 'StaffController@accept')->name('server.staff.accept');
+    Route::post('/deny', 'StaffController@deny')->name('server.staff.deny');
+});
+
+
+
+
+/app/Http/Kernel.php
+Please insert this code to /app/Http/Kernel.php under the 'node.maintenance' => MaintenanceMiddleware::class, line
+
+'staff' => IsStaffMiddleware::class,
+
+and please insert this code to /app/Http/Kernel.php above the use Pterodactyl\Models\ApiKey; line
+
+use Pterodactyl\Http\Middleware\IsStaffMiddleware;
+
+
+
+
+/resources/themes/pterodactyl/layouts/master.blade.php
+Please insert this codes to /resources/themes/pterodactyl/layouts/master.blade.php above the second @if (isset($server->name) && isset($node->name)) line
+
+@if(Auth::user()->staff)
+	<li class="header">Staff System</li>
+	<li class="{{ Route::currentRouteName() !== 'staff.server.access' ?: 'active' }}">
+		<a href="{{ route('staff.server.access')}}">
+			<i class="fa fa-server"></i> <span>Server Access</span>
+		</a>
+	</li>
+@endif
+
+If you use ModernUI:
+
+@if(Auth::user()->staff)
+	<li class="sidebar-header">Staff System</li>
+	<li class="{{ Route::currentRouteName() !== 'staff.server.access' ?: 'mm-active' }}">
+		<a href="{{ route('staff.server.access')}}">
+			<span><i data-feather="server"></i><span>Server Access</span></span>
+		</a>
+	</li>
+@endif
+
+
+Please insert this codes to /resources/themes/pterodactyl/layouts/master.blade.php above the @if(Gate::allows('view-startup', $server) ... line
+
+@can('view-staff', $server)
+	<li
+		@if(starts_with(Route::currentRouteName(), 'server.staff'))
+		class="active"
+		@endif
+	>
+		<a class="nav-link" href="{{ route('server.staff', $server->uuidShort)}}">
+			<i class="fa fa-check"></i> <span>Access Requests</span>
+		</a>
+	</li>
+@endcan
+
+If you use ModernUI:
+
+@can('view-staff', $server)
+	<li
+		@if(starts_with(Route::currentRouteName(), 'server.staff'))
+		class="mm-active"
+		@endif
+	>
+		<a href="{{ route('server.staff', $server->uuidShort)}}">
+			<span><i data-feather="check"></i><span>Access Requests</span></span>
+		</a>
+	</li>
+@endcan
+
+
+
+
+/resources/themes/pterodactyl/admin/users/view.blade.php
+Please insert this codes to /resources/themes/pterodactyl/admin/users/view.blade.php to above the <div class="col-xs-12"> line (about line 153)
+
+<div class="col-xs-12">
+	<div class="box box-warning">
+		<div class="box-header with-border">
+			<h3 class="box-title">Staff System</h3>
+		</div>
+		<form action="{{ route('staff.update', $user->id) }}" method="POST">
+			<div class="box-body">
+				<div class="form-group">
+					<label for="staff" class="control-label">Staff</label>
+					<select id="staff" name="staff" class="form-control">
+						<option value="0">@lang('strings.no')</option>
+						<option value="1" {{ $user->staff ? 'selected="selected"' : '' }}>@lang('strings.yes')</option>
+					</select>
+					<p class="text-muted small">You can enable and disable staff role to this user. He can request an access to servers.</p>
+				</div>
+			</div>
+			<div class="box-footer">
+				{!! csrf_field() !!}
+				<button class="btn btn-success pull-right">Update</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+
+
+
+/app/Models/Permission.php
+Please insert this line to /app/Models/Permission.php under the 'edit-startup' => null, line
+
+'view-staff' => null,
+
+
+
+
+/resources/lang/en/server.php - If you use another language, please edit your, not EN
+Please insert this lines to /resources/lang/en/server.php under the 'database_header' => 'Database Management', line
+
+'view_staff' => [
+	'title' => 'Staff System',
+	'description' => 'Accept / deny staff access requests.',
+],
+
+
+
+
+After all code inserted to code and app and resources and database folder pasted. Please run this commands:
+- php artisan view:clear
+- php artisan cache:clear
+- php artisan route:clear
+- php artisan migrate

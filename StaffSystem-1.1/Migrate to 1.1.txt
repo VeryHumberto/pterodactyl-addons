@@ -1,0 +1,26 @@
+Please do this code inserts:
+
+/app/Models/Permission.php
+Please insert this line to /app/Models/Permission.php under the 'edit-startup' => null, line
+
+'view-staff' => null,
+
+
+
+
+/resources/lang/en/server.php - If you use another language, please edit your, not EN
+Please insert this lines to /resources/lang/en/server.php under the 'database_header' => 'Database Management', line
+
+'view_staff' => [
+	'title' => 'Staff System',
+	'description' => 'Accept / deny staff access requests.',
+],
+
+
+
+
+After it, please paste app folder to your panel and overwrite files.
+Please run this commands:
+- php artisan view:clear
+- php artisan cache:clear
+- php artisan route:clear

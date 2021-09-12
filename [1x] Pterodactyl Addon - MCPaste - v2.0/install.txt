@@ -1,0 +1,26 @@
+Install help can be found at: https://github.com/HM4Development/mcpaste-addon/blob/development/README.md
+Support discord: https://discord.gg/aZUbmGDgf7
+
+Before installing:
+1. Create an account on https://hm4.dev
+2. Enable the MCPaste API module
+3. Click on the MCPaste API tab on the left
+4. Add a new site and enter the domain of your panel (e.g. if your panel is at "https://panel.amazing.host", you would enter "panel.amazing.host")
+5. You'll get the token to use later
+
+Install preconditions:
+- NodeJS and NPM installed
+- git installed
+
+Summarized install steps:
+1. Change directory to your panel root (cd /var/www/pterodactyl)
+2. Run the install script: bash <(curl -sL https://github.com/HM4Development/mcpaste-addon/releases/download/v2.0.0/install.sh)
+3. Follow the script
+
+After installing:
+1. Copy the token created on https://hm4.dev
+2. Go to the Admin portion of your panel
+3. Click on the MCPaste tab on the left
+4. Enter the token and click update!
+
+You're ready to go!
